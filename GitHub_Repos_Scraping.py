@@ -1,13 +1,14 @@
 import requests
 import os
 
-# Set your GitHub token here
-GITHUB_TOKEN = 'TOKEN_HERE'
+# Configurazione
+GITHUB_USERNAME = 'USERNAME_HERE'  # Inserisci qui lo username GitHub
+GITHUB_TOKEN = 'TOKEN_HERE'  # Inserisci qui il tuo token GitHub
 BASE_API_URL = 'https://api.github.com'
 
-def get_repositories(username):
+def get_repositories():
     """Return the repos list of a user."""
-    url = f'{BASE_API_URL}/users/{username}/repos'
+    url = f'{BASE_API_URL}/users/{GITHUB_USERNAME}/repos'
     headers = {
         'Authorization': f'token {GITHUB_TOKEN}'
     }
@@ -19,9 +20,9 @@ def get_repositories(username):
         print(f"Error getting the repositories: {response.status_code}")
         return []
 
-def get_files_in_repository(username, repo_name):
+def get_files_in_repository(repo_name):
     """Return the list of files in a repository."""
-    url = f'{BASE_API_URL}/repos/{username}/{repo_name}/git/trees/main?recursive=1'
+    url = f'{BASE_API_URL}/repos/{GITHUB_USERNAME}/{repo_name}/git/trees/main?recursive=1'
     headers = {
         'Authorization': f'token {GITHUB_TOKEN}'
     }
@@ -33,17 +34,17 @@ def get_files_in_repository(username, repo_name):
         print(f"Error getting the files for the repository: {repo_name}: {response.status_code}")
         return []
 
-def get_raw_links(username):
-    repos = get_repositories(username)
+def get_raw_links():
+    repos = get_repositories()
     raw_links = []
 
     for repo in repos:
         repo_name = repo['name']
-        files = get_files_in_repository(username, repo_name)
+        files = get_files_in_repository(repo_name)
 
         for file in files:
             if file['type'] == 'blob':  # Solo file, non cartelle
-                raw_url = f'https://raw.githubusercontent.com/{username}/{repo_name}/main/{file["path"]}'
+                raw_url = f'https://raw.githubusercontent.com/{GITHUB_USERNAME}/{repo_name}/main/{file["path"]}'
                 raw_links.append(raw_url)
 
     return raw_links
@@ -60,8 +61,7 @@ def download_file(url, save_path):
 
 # Example of usage
 if __name__ == "__main__":
-    github_username = 'USERNAME_HERE'  # Insert here the GitHub username you want to scrape
-    raw_links = get_raw_links(github_username)
+    raw_links = get_raw_links()
 
     for link in raw_links:
         print(link)
@@ -77,8 +77,3 @@ if __name__ == "__main__":
             download_file(link, filename)
     else:
         print("Download aborted.")
-
-    raw_links = get_raw_links(github_username)
-    
-    for link in raw_links:
-        print(link)
