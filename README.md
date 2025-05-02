@@ -50,14 +50,17 @@ Scrapes all raw file links from a given GitHub user’s public repositories.
 ```bash
 git clone https://github.com/simotone97/malware-analysis-toolkit.git
 cd malware-analysis-toolkit
+```
 
 2. (Optional) Create and activate a virtual environment:
 
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
 
 3. Install any required packages (check script headers):
 
 ```bash
 pip install -r requirements.txt
+```
